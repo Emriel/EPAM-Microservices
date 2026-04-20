@@ -33,8 +33,8 @@ class TrainerWorkloadControllerTest {
     @MockBean
     private TrainerWorkloadService trainerWorkloadService;
 
-        @MockBean
-        private JwtValidationService jwtValidationService;
+    @MockBean
+    private JwtValidationService jwtValidationService;
 
     @Test
     void reportTrainingWorkload_shouldReturnOkAndDelegateToService() throws Exception {

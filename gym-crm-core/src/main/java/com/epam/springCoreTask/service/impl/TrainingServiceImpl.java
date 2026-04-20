@@ -160,19 +160,6 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    @Transactional
-    public Training deleteTraining(Long id) {
-        log.debug("Deleting training by id: {}", id);
-
-        Training training = trainingRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Training not found with id: " + id));
-
-        trainingRepository.delete(training);
-        log.info("Training deleted successfully: id={}, name={}", id, training.getTrainingName());
-        return training;
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<Training> getAllTrainings() {
         log.debug("Fetching all trainings");

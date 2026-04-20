@@ -13,8 +13,6 @@ public interface TrainingService {
 
     Training getTrainingById(Long id);
 
-    Training deleteTraining(Long id);
-
     List<Training> getAllTrainings();
 
     List<Training> getTraineeTrainingsWithCriteria(String traineeUsername, LocalDate fromDate,

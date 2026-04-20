@@ -24,8 +24,6 @@ public interface GymFacade {
 
     void createTrainingSession(TrainingRequest request);
 
-    void deleteTrainingSession(Long trainingId);
-
     TraineeProfileResponse updateTraineeProfile(String username, TraineeUpdateRequest request);
 
     TrainerProfileResponse updateTrainerProfile(String username, TrainerUpdateRequest request);

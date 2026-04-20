@@ -106,19 +106,6 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void deleteTrainingSession(Long trainingId) {
-        log.info("Deleting training session through facade: id={}", trainingId);
-
-        Training deletedTraining = trainingService.deleteTraining(trainingId);
-        trainerWorkloadGateway.reportTrainingDeleted(
-                deletedTraining.getTrainer(),
-                deletedTraining.getTrainingDate(),
-                deletedTraining.getTrainingDuration());
-
-        log.info("Training session deleted through facade: id={}", trainingId);
-    }
-
-    @Override
     public TraineeProfileResponse updateTraineeProfile(String username, TraineeUpdateRequest request) {
         log.info("Updating trainee profile through facade: {}", username);
 

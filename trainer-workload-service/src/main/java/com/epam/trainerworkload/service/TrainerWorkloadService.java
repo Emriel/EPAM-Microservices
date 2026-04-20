@@ -40,9 +40,9 @@ public class TrainerWorkloadService {
         Map<Integer, Integer> monthlyByYear = summary.getYears().computeIfAbsent(year,
                 ignored -> new ConcurrentHashMap<>());
         int delta = request.getActionType() == WorkloadActionType.ADD ? duration : -duration;
-        int updatedMinutes = Math.max(0, monthlyByYear.getOrDefault(month, 0) + delta);
+        monthlyByYear.merge(month, delta, (Integer oldValue, Integer d) -> Math.max(0, oldValue + d));
 
-        monthlyByYear.put(month, updatedMinutes);
+        int updatedMinutes = monthlyByYear.get(month);
         log.info("Workload {} applied for trainer={}, year={}, month={}, totalMinutes={}",
                 request.getActionType(), request.getTrainerUsername(), year, month, updatedMinutes);
     }

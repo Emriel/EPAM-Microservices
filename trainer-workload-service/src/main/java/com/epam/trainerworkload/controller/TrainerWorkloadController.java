@@ -39,14 +39,12 @@ public class TrainerWorkloadController {
 
     private final TrainerWorkloadService trainerWorkloadService;
 
-        @Operation(summary = "Report workload change", description = "Adds or removes workload minutes for a trainer")
-        @ApiResponses(value = {
+    @Operation(summary = "Report workload change", description = "Adds or removes workload minutes for a trainer")
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Workload update accepted"),
-            @ApiResponse(responseCode = "400", description = "Invalid request payload",
-                content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "401", description = "Authentication required",
-                content = @Content(schema = @Schema(implementation = String.class)))
-        })
+            @ApiResponse(responseCode = "400", description = "Invalid request payload", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "401", description = "Authentication required", content = @Content(schema = @Schema(implementation = String.class)))
+    })
     @PostMapping("/report")
     public ResponseEntity<Void> reportTrainingWorkload(
             @Valid @RequestBody TrainerWorkloadRequest request,
@@ -70,10 +68,8 @@ public class TrainerWorkloadController {
     @Operation(summary = "Get trainer workload", description = "Fetches the current workload summary for a trainer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Workload summary found"),
-            @ApiResponse(responseCode = "404", description = "Trainer workload not found",
-                    content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "401", description = "Authentication required",
-                    content = @Content(schema = @Schema(implementation = String.class)))
+            @ApiResponse(responseCode = "404", description = "Trainer workload not found", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "401", description = "Authentication required", content = @Content(schema = @Schema(implementation = String.class)))
     })
     @GetMapping("/{trainerUsername}")
     public ResponseEntity<TrainerWorkloadSummary> getTrainerWorkload(@PathVariable String trainerUsername) {

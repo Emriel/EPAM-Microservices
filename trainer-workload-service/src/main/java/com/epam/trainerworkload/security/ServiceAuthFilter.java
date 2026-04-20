@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ServiceAuthFilter extends OncePerRequestFilter {
 
-    private static final String[] PUBLIC_PATHS = {"/actuator", "/swagger-ui", "/v3/api-docs"};
+    private static final String[] PUBLIC_PATHS = { "/actuator", "/swagger-ui", "/v3/api-docs" };
 
     private final JwtValidationService jwtValidationService;
 

@@ -5,7 +5,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -199,17 +198,5 @@ class TrainingControllerTest {
                 .andExpect(jsonPath("$").isEmpty());
 
         verify(trainingTypeRepository).findAll();
-    }
-
-    @Test
-    void testDeleteTraining_Success() throws Exception {
-        doNothing().when(gymFacade).deleteTrainingSession(1L);
-
-        mockMvc.perform(delete("/api/trainings/{trainingId}", 1L)
-                .header("Username", "john.doe")
-                .header("Password", "password123"))
-                .andExpect(status().isOk());
-
-        verify(gymFacade).deleteTrainingSession(1L);
     }
 }

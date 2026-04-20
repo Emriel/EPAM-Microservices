@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +25,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -57,21 +54,6 @@ public class TrainingController {
         gymFacade.createTrainingSession(request);
 
         log.info("Training created successfully: {}", request.getTrainingName());
-        return ResponseEntity.ok().build();
-    }
-
-    @Operation(summary = "Delete training", description = "Delete an existing training session")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Training deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Training not found", content = @Content(schema = @Schema(implementation = String.class)))
-    })
-    @DeleteMapping("/{trainingId}")
-    public ResponseEntity<Void> deleteTraining(@PathVariable @Positive Long trainingId) {
-        log.info("Deleting training: id={}", trainingId);
-
-        gymFacade.deleteTrainingSession(trainingId);
-
-        log.info("Training deleted successfully: id={}", trainingId);
         return ResponseEntity.ok().build();
     }
 

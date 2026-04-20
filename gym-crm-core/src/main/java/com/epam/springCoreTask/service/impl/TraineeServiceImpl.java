@@ -205,6 +205,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         log.info("Trainee deleted successfully: username={}, removedTrainings={}", username, trainings.size());
     }
+
     private final TrainerWorkloadGateway trainerWorkloadGateway;
 
     @Override
