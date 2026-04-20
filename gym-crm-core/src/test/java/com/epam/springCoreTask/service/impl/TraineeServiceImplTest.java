@@ -22,10 +22,12 @@ import com.epam.springCoreTask.exception.DuplicateAssignmentException;
 import com.epam.springCoreTask.exception.EntityNotFoundException;
 import com.epam.springCoreTask.model.Trainee;
 import com.epam.springCoreTask.model.Trainer;
+import com.epam.springCoreTask.model.Training;
 import com.epam.springCoreTask.model.User;
 import com.epam.springCoreTask.repository.TraineeRepository;
 import com.epam.springCoreTask.repository.TrainerRepository;
 import com.epam.springCoreTask.service.UserService;
+import com.epam.springCoreTask.service.integration.TrainerWorkloadGateway;
 import com.epam.springCoreTask.util.PasswordGenerator;
 import com.epam.springCoreTask.util.UsernameGenerator;
 import com.epam.springCoreTask.util.ValidationUtil;
@@ -53,6 +55,9 @@ class TraineeServiceImplTest {
 
     @Mock
     private ValidationUtil validationUtil;
+
+    @Mock
+    private TrainerWorkloadGateway trainerWorkloadGateway;
 
     @InjectMocks
     private TraineeServiceImpl traineeService;
@@ -336,12 +341,39 @@ class TraineeServiceImplTest {
         // Arrange
         when(traineeRepository.findByUser_Username("john.doe")).thenReturn(Optional.of(testTrainee));
 
+        Training training1 = new Training();
+        training1.setTrainer(createTrainer("trainer.one", "Alice", "Brown"));
+        training1.setTrainingDate(LocalDate.of(2026, 4, 14));
+        training1.setTrainingDuration(45);
+
+        Training training2 = new Training();
+        training2.setTrainer(createTrainer("trainer.two", "Bob", "Green"));
+        training2.setTrainingDate(LocalDate.of(2026, 4, 20));
+        training2.setTrainingDuration(30);
+
+        testTrainee.setTrainings(new ArrayList<>(List.of(training1, training2)));
+
         // Act
         traineeService.deleteTraineeByUsername("john.doe");
 
         // Assert
         verify(traineeRepository).findByUser_Username("john.doe");
+        verify(trainerWorkloadGateway).reportTrainingDeleted(training1.getTrainer(), training1.getTrainingDate(),
+                training1.getTrainingDuration());
+        verify(trainerWorkloadGateway).reportTrainingDeleted(training2.getTrainer(), training2.getTrainingDate(),
+                training2.getTrainingDuration());
         verify(traineeRepository).delete(testTrainee);
+    }
+
+    private static Trainer createTrainer(String username, String firstName, String lastName) {
+        User trainerUser = new User();
+        trainerUser.setUsername(username);
+        trainerUser.setFirstName(firstName);
+        trainerUser.setLastName(lastName);
+
+        Trainer trainer = new Trainer();
+        trainer.setUser(trainerUser);
+        return trainer;
     }
 
     @Test

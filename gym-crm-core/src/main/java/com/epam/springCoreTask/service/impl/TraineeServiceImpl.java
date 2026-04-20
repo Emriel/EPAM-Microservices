@@ -1,5 +1,6 @@
 package com.epam.springCoreTask.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -10,11 +11,13 @@ import com.epam.springCoreTask.exception.DuplicateAssignmentException;
 import com.epam.springCoreTask.exception.EntityNotFoundException;
 import com.epam.springCoreTask.model.Trainee;
 import com.epam.springCoreTask.model.Trainer;
+import com.epam.springCoreTask.model.Training;
 import com.epam.springCoreTask.model.User;
 import com.epam.springCoreTask.repository.TraineeRepository;
 import com.epam.springCoreTask.repository.TrainerRepository;
 import com.epam.springCoreTask.service.TraineeService;
 import com.epam.springCoreTask.service.UserService;
+import com.epam.springCoreTask.service.integration.TrainerWorkloadGateway;
 import com.epam.springCoreTask.util.PasswordGenerator;
 import com.epam.springCoreTask.util.UsernameGenerator;
 import com.epam.springCoreTask.util.ValidationUtil;
@@ -189,10 +192,20 @@ public class TraineeServiceImpl implements TraineeService {
         log.debug("Deleting trainee by username: {}", username);
 
         Trainee trainee = getTraineeByUsername(username);
+        List<Training> trainings = new ArrayList<>(trainee.getTrainings());
+
+        for (Training training : trainings) {
+            trainerWorkloadGateway.reportTrainingDeleted(
+                    training.getTrainer(),
+                    training.getTrainingDate(),
+                    training.getTrainingDuration());
+        }
+
         traineeRepository.delete(trainee);
 
-        log.info("Trainee deleted successfully: username={}", username);
+        log.info("Trainee deleted successfully: username={}, removedTrainings={}", username, trainings.size());
     }
+    private final TrainerWorkloadGateway trainerWorkloadGateway;
 
     @Override
     @Transactional

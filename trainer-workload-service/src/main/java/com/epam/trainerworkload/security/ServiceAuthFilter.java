@@ -21,16 +21,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ServiceAuthFilter extends OncePerRequestFilter {
 
+    private static final String[] PUBLIC_PATHS = {"/actuator", "/swagger-ui", "/v3/api-docs"};
+
     private final JwtValidationService jwtValidationService;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String requestUri = request.getRequestURI();
+        for (String publicPath : PUBLIC_PATHS) {
+            if (requestUri.startsWith(publicPath)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if (request.getRequestURI().startsWith("/actuator")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header == null || !header.startsWith("Bearer ")) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

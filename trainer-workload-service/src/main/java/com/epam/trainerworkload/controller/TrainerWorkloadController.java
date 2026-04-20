@@ -17,6 +17,12 @@ import com.epam.trainerworkload.dto.TrainerWorkloadRequest;
 import com.epam.trainerworkload.model.TrainerWorkloadSummary;
 import com.epam.trainerworkload.service.TrainerWorkloadService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +32,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
+@Tag(name = "Trainer Workload", description = "Trainer workload reporting endpoints")
 public class TrainerWorkloadController {
 
     private static final String TRANSACTION_ID_HEADER = "X-Transaction-Id";
 
     private final TrainerWorkloadService trainerWorkloadService;
 
+        @Operation(summary = "Report workload change", description = "Adds or removes workload minutes for a trainer")
+        @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Workload update accepted"),
+            @ApiResponse(responseCode = "400", description = "Invalid request payload",
+                content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "401", description = "Authentication required",
+                content = @Content(schema = @Schema(implementation = String.class)))
+        })
     @PostMapping("/report")
     public ResponseEntity<Void> reportTrainingWorkload(
             @Valid @RequestBody TrainerWorkloadRequest request,
@@ -52,6 +67,14 @@ public class TrainerWorkloadController {
         }
     }
 
+    @Operation(summary = "Get trainer workload", description = "Fetches the current workload summary for a trainer")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Workload summary found"),
+            @ApiResponse(responseCode = "404", description = "Trainer workload not found",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "401", description = "Authentication required",
+                    content = @Content(schema = @Schema(implementation = String.class)))
+    })
     @GetMapping("/{trainerUsername}")
     public ResponseEntity<TrainerWorkloadSummary> getTrainerWorkload(@PathVariable String trainerUsername) {
         TrainerWorkloadSummary summary = trainerWorkloadService.getByTrainerUsername(trainerUsername);
